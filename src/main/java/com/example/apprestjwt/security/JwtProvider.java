@@ -3,9 +3,13 @@ package com.example.apprestjwt.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+
+@Component
 public class JwtProvider {
 
 
@@ -26,5 +30,28 @@ public class JwtProvider {
     public static void main(String[] args) {
         String token = generateToken("userLogini");
         System.out.println(token);
+    }
+
+    public boolean validateToken(String token){
+            try {
+        Jwts
+                .parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token);
+            return true;
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            return false;
+    }
+
+    public String getUsernameFromToken(String token){
+        String username = Jwts
+                .parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+        return username;
     }
 }
